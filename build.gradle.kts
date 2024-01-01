@@ -18,6 +18,14 @@ tasks.test {
     useJUnitPlatform()
 }
 
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
+}
+
 kotlin {
     jvmToolchain(8)
 }
