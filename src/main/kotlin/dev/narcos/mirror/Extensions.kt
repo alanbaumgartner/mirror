@@ -13,4 +13,4 @@ fun List<KClass<*>>.subTypesOf(clazz: KClass<*>) =
 fun List<KClass<*>>.subTypesOf(clazz: Class<*>) =
     filter { clazz.isAssignableFrom(it.java) }
 
-inline fun <reified T : Any> List<KClass<*>>.isType() = filterIsInstance<T>()
+inline fun <reified T : KClass<T>> List<KClass<*>>.typed() = filterIsInstance<T>()

@@ -2,6 +2,7 @@
 
 package dev.narcos.mirror
 
+import java.io.Closeable
 import java.net.URL
 import kotlin.reflect.KClass
 
@@ -42,8 +43,9 @@ data class ClassInfo(
 }
 
 class Mirror private constructor(
-    private val classPathResources: Set<ClassPathResource> = setOf(),
-) {
+    private val classLoader: ClassLoader,
+    private val classPathResources: MutableSet<ClassPathResource> = mutableSetOf(),
+) : Closeable {
 
     val resources: List<ResourceInfo>
         get() = classPathResources.filterIsInstance<ResourceInfo>()
@@ -65,7 +67,14 @@ class Mirror private constructor(
 
     companion object {
         fun from(classLoader: ClassLoader): Mirror {
-            return Mirror(classLoader.getClassPathResources())
+            return Mirror(classLoader, classLoader.getClassPathResources().toMutableSet())
+        }
+    }
+
+    override fun close() {
+        classPathResources.clear()
+        if (classLoader is Closeable) {
+            classLoader.close()
         }
     }
 }
