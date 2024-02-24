@@ -4,6 +4,8 @@ package dev.narcos.mirror
 
 import java.io.Closeable
 import java.net.URL
+import java.net.URLClassLoader
+import java.nio.file.Path
 import kotlin.reflect.KClass
 
 sealed interface ClassPathResource {
@@ -66,6 +68,11 @@ class Mirror private constructor(
     }
 
     companion object {
+        fun from(path: Path): Mirror {
+            val classLoader = URLClassLoader(arrayOf(path.toUri().toURL()))
+            return from(classLoader)
+        }
+
         fun from(classLoader: ClassLoader): Mirror {
             return Mirror(classLoader, classLoader.getClassPathResources().toMutableSet())
         }

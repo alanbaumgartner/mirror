@@ -19,6 +19,9 @@ fun <T : Any> List<KClass<*>>.typed(clazz: Class<*>): List<KClass<T>> =
 
 inline fun <reified T : Any> List<KClass<*>>.typed(): List<KClass<T>> = typed(T::class)
 
+fun <T : Annotation> List<KClass<*>>.annotatedWith(annotation: T): List<KClass<*>> =
+    filter { it.annotations.any { anno -> anno == annotation } }
+
 fun <T : Any> KProperty<*>.typedOrNull(clazz: KClass<T>): KProperty<T>? {
     return if (returnType.isSubtypeOf(clazz.starProjectedType)) {
         this as KProperty<T>
