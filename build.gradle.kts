@@ -3,7 +3,7 @@ plugins {
     id("maven-publish")
 }
 
-group = "dev.narcos.mirror"
+group = "dev.narcos"
 version = "0.1.0"
 
 repositories {
@@ -18,14 +18,20 @@ tasks.test {
     useJUnitPlatform()
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
+            artifactId = "mirror"
             from(components["java"])
         }
     }
 }
 
 kotlin {
-    jvmToolchain(8)
+    jvmToolchain(11)
 }

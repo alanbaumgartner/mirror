@@ -4,6 +4,7 @@ package dev.narcos.mirror
 
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
+import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.starProjectedType
@@ -20,7 +21,7 @@ fun <T : Any> List<KClass<*>>.typed(clazz: Class<*>): List<KClass<T>> =
 inline fun <reified T : Any> List<KClass<*>>.typed(): List<KClass<T>> = typed(T::class)
 
 inline fun <reified T : Annotation> List<KClass<*>>.annotatedWith(): List<KClass<*>> =
-    filter { it.annotations.any { anno -> anno.annotationClass == T::class } }
+    filter { runCatching { it.hasAnnotation<T>() }.getOrDefault(false) }
 
 fun <T : Any> KProperty<*>.typedOrNull(clazz: KClass<T>): KProperty<T>? {
     return if (returnType.isSubtypeOf(clazz.starProjectedType)) {
